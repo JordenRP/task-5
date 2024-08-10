@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+  php:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    volumes:
+      - ./server:/var/www/html
+    networks:
+      - my-network
+    expose:
+      - "9000"
+
+  nginx:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.nginx
+    ports:
+      - "8080:80"
+    depends_on:
+      - php
+    networks:
+      - my-network
+
+  frontend:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.frontend
+    ports:
+      - "3000:80"
+    networks:
+      - my-network
+
+networks:
+  my-network:
+    driver: bridge
